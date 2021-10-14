@@ -30,7 +30,7 @@ namespace Daspro_Kelas
 
                     switch (playerAction) {
                         case "1":
-                            Console.WriteLine($"{newPlayer.Name} id doing Single Attack");
+                            Console.WriteLine($"{newPlayer.Name} is doing Single Attack");
                             firstEnemy.GetHit(newPlayer.AttackPower);
                             newPlayer.Exp += 0.3f;
                             firstEnemy.Attack();
