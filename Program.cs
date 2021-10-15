@@ -237,7 +237,7 @@ namespace Adventure_Game
         } 
     }
 
-    class Boss:Enemy
+    class Boss
     {
         public int Health { get; set; }
         public string Name { get; set; }
