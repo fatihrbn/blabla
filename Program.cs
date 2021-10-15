@@ -253,7 +253,7 @@ namespace Adventure_Game
 
         public void Attack(int min, int max, int playerHealth)
         {
-            int chances = rnd.Next(1, 21);
+            int chances = rnd.Next(1, 11);
             if (chances == 1) {
                 Skill(playerHealth);
             } else {
@@ -280,7 +280,7 @@ namespace Adventure_Game
 
         public void Skill(int playerHealth)
         {
-            int chances = rnd.Next(1, 1001);
+            int chances = rnd.Next(1, 11);
 
             if (chances == 1) {
                 AttackPower = playerHealth;
