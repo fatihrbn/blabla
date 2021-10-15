@@ -19,7 +19,7 @@ namespace Adventure_Game
             };
             Console.WriteLine("Welcome to My Adventure Game");
             Console.WriteLine("What is your name?");
-            Novice newPlayer = new Novice();
+            Knight newPlayer = new Knight();
             newPlayer.Name = Console.ReadLine();
 
             for (int i = 0; i < 3; i++) {
@@ -29,43 +29,66 @@ namespace Adventure_Game
                 Console.WriteLine($"{firstEnemy.Name} is attacking you...");
                 Console.WriteLine("Choose your action : ");
                 Console.WriteLine("1. Single Attack");
-                Console.WriteLine("2. Swing Attack");
+                Console.WriteLine("2. Skill");
                 Console.WriteLine("3. Defend");
                 Console.WriteLine("4. Run Away");
+                Console.WriteLine($"Your Energy : {newPlayer.Energy}");
 
                 while (!newPlayer.IsDead && !firstEnemy.IsDead) {
                     string playerAction = Console.ReadLine();
 
                     switch (playerAction) {
                         case "1":
-                            Console.WriteLine($"{newPlayer.Name} is doing Single Attack");
                             newPlayer.singleAttack();
+                            Console.WriteLine($"{newPlayer.Name} is doing Single Attack");
                             firstEnemy.GetHit(newPlayer.AttackPower);
                             newPlayer.Exp += 0.3f;
-                            firstEnemy.Attack(1 + i, 6 + i);
-                            newPlayer.GetHit(firstEnemy.AttackPower);
-                            Console.WriteLine($"Player Health : {newPlayer.Health} | Enemy Health : {firstEnemy.Health}");
-                            break;
-                        case "2":
-                            if (newPlayer.Energy > 0) {
-                                newPlayer.Swing();
-                                newPlayer.Exp += 0.9f;
-                                firstEnemy.GetHit(newPlayer.AttackPower);
+
+                            if (firstEnemy.Stun > 0) {
+                                firstEnemy.Stun--;
+                                Console.WriteLine($"{firstEnemy.Name} can't attack for total: {firstEnemy.Stun} turn");
                             } else {
-                                newPlayer.Swing();
-                                Console.WriteLine($"{newPlayer.Name} is doing Single Attack");
-                                firstEnemy.GetHit(newPlayer.AttackPower);
-                                newPlayer.Exp += 0.3f;
                                 firstEnemy.Attack(1 + i, 6 + i);
                                 newPlayer.GetHit(firstEnemy.AttackPower);
                             }
                             Console.WriteLine($"Player Health : {newPlayer.Health} | Enemy Health : {firstEnemy.Health}");
+                            Console.WriteLine($"Your Energy : {newPlayer.Energy}");
+                            break;
+                        case "2":
+                            if (newPlayer.Energy > 0) {
+                                newPlayer.Skill();
+                                firstEnemy.Stun += 2;
+                                newPlayer.Exp += 0.9f;
+                                Console.WriteLine($"{firstEnemy.Name} can't attack for total: {firstEnemy.Stun} turn");
+                            } else {
+                                newPlayer.Skill();
+                                Console.WriteLine($"{newPlayer.Name} is doing Single Attack");
+                                firstEnemy.GetHit(newPlayer.AttackPower);
+                                newPlayer.Exp += 0.3f;
+                                
+                                if (firstEnemy.Stun > 0) {
+                                    firstEnemy.Stun--;
+                                    Console.WriteLine($"{firstEnemy.Name} can't attack for total: {firstEnemy.Stun} turn");
+                                } else {
+                                    firstEnemy.Attack(1 + i, 6 + i);
+                                    newPlayer.GetHit(firstEnemy.AttackPower);
+                                }
+                            }
+                            Console.WriteLine($"Player Health : {newPlayer.Health} | Enemy Health : {firstEnemy.Health}");
+                            Console.WriteLine($"Your Energy : {newPlayer.Energy}");
                             break;
                         case "3":
                             newPlayer.Rest();
                             Console.WriteLine("Energy is being restored...");
-                            firstEnemy.Attack(1 + i, 6 + i);
-                            newPlayer.GetHit(firstEnemy.AttackPower);
+                            if (firstEnemy.Stun > 0) {
+                                firstEnemy.Stun--;
+                                Console.WriteLine($"{firstEnemy.Name} can't attack for total: {firstEnemy.Stun} turn");
+                            } else {
+                                firstEnemy.Attack(1 + i, 6 + i);
+                                newPlayer.GetHit(firstEnemy.AttackPower);
+                            }
+                            Console.WriteLine($"Player Health : {newPlayer.Health} | Enemy Health : {firstEnemy.Health}");
+                            Console.WriteLine($"Your Energy : {newPlayer.Energy}");
                             break;
                         case "4":
                             Console.WriteLine(newPlayer.Name + " attemp to run away...");
@@ -78,17 +101,16 @@ namespace Adventure_Game
                     return false;
                 }
             }
-
             Console.WriteLine($"{newPlayer.Name} is entering the world");
             Boss firstBoss = new Boss(enemyName[3]);
-            // firstBoss.Name = enemyName[4];
             Console.WriteLine($"{newPlayer.Name} is encountering {firstBoss.Name}");
             Console.WriteLine($"{firstBoss.Name} is attacking you...");
             Console.WriteLine("Choose your action : ");
             Console.WriteLine("1. Single Attack");
-            Console.WriteLine("2. Swing Attack");
+            Console.WriteLine("2. Skill");
             Console.WriteLine("3. Defend");
             Console.WriteLine("4. Run Away");
+            Console.WriteLine($"Your Energy : {newPlayer.Energy}");
 
             while (!newPlayer.IsDead && !firstBoss.IsDead) {
                 string playerAction = Console.ReadLine();
@@ -99,30 +121,51 @@ namespace Adventure_Game
                         newPlayer.singleAttack();
                         firstBoss.GetHit(newPlayer.AttackPower);
                         newPlayer.Exp += 0.3f;
-                        firstBoss.Attack(5, 16, newPlayer.Health);
-                        newPlayer.GetHit(firstBoss.AttackPower);
-                        Console.WriteLine($"Player Health : {newPlayer.Health} | Enemy Health : {firstBoss.Health}");
-                        break;
-                    case "2":
-                        if (newPlayer.Energy > 0) {
-                            newPlayer.Swing();
-                            newPlayer.Exp += 0.9f;
-                            firstBoss.GetHit(newPlayer.AttackPower);
+                        if (firstBoss.Stun > 0) {
+                            firstBoss.Stun--;
+                            Console.WriteLine($"{firstBoss.Name} can't attack for total: {firstBoss.Stun} turn");
                         } else {
-                            newPlayer.Swing();
-                            Console.WriteLine($"{newPlayer.Name} is doing Single Attack");
-                            firstBoss.GetHit(newPlayer.AttackPower);
-                            newPlayer.Exp += 0.3f;
                             firstBoss.Attack(5, 16, newPlayer.Health);
                             newPlayer.GetHit(firstBoss.AttackPower);
                         }
                         Console.WriteLine($"Player Health : {newPlayer.Health} | Enemy Health : {firstBoss.Health}");
+                        Console.WriteLine($"Your Energy : {newPlayer.Energy}");
+                        break;
+                    case "2":
+                        if (newPlayer.Energy > 0) {
+                            firstBoss.Stun += 2;
+                            newPlayer.Skill();
+                            newPlayer.Exp += 0.9f;
+                            Console.WriteLine($"{firstBoss.Name} can't attack for total: {firstBoss.Stun} turn");
+                        } else {
+                            newPlayer.Skill();
+                            Console.WriteLine($"{newPlayer.Name} is doing Single Attack");
+                            firstBoss.GetHit(newPlayer.AttackPower);
+                            newPlayer.Exp += 0.3f;
+                            
+                            if (firstBoss.Stun > 0) {
+                                firstBoss.Stun--;
+                                Console.WriteLine($"{firstBoss.Name} can't attack for total: {firstBoss.Stun} turn");
+                            } else {
+                                firstBoss.Attack(5, 16, newPlayer.Health);
+                                newPlayer.GetHit(firstBoss.AttackPower);
+                            }
+                        }
+                        Console.WriteLine($"Player Health : {newPlayer.Health} | Enemy Health : {firstBoss.Health}");
+                        Console.WriteLine($"Your Energy : {newPlayer.Energy}");
                         break;
                     case "3":
                         newPlayer.Rest();
                         Console.WriteLine("Energy is being restored...");
-                        firstBoss.Attack(5, 16, newPlayer.Health);
-                        newPlayer.GetHit(firstBoss.AttackPower);
+                        if (firstBoss.Stun > 0) {
+                            firstBoss.Stun--;
+                            Console.WriteLine($"{firstBoss.Name} can't attack for total: {firstBoss.Stun} turn");
+                        } else {
+                            firstBoss.Attack(5, 16, newPlayer.Health);
+                            newPlayer.GetHit(firstBoss.AttackPower);
+                        }
+                        Console.WriteLine($"Player Health : {newPlayer.Health} | Enemy Health : {firstBoss.Health}");
+                        Console.WriteLine($"Your Energy : {newPlayer.Energy}");
                         break;
                     case "4":
                         Console.WriteLine(newPlayer.Name + " attemp to run away...");
@@ -200,18 +243,36 @@ namespace Adventure_Game
         }
     }
 
+    class Knight:Novice
+    {
+        public void Skill()
+        {
+            if (Energy > 0) {
+                Console.WriteLine(Name + " use Bash Skill!!");
+                Console.WriteLine("Stun Enemy can't attack for 2 turn");
+                Energy--;
+            } else {
+                Console.WriteLine("You're run out of energy");
+            }
+           
+        }
+    }
+
     class Enemy
     {
         public int Health { get; set; }
         public string Name { get; set; }
         public int AttackPower { get; set; }
         public bool IsDead { get; set; }
+        public int Stun { get; set; }
+
         Random rnd = new Random();
 
         public Enemy(string name)
         {
             Health = 25;
             Name = name;
+            Stun = 0;
         }
 
         public void Attack(int min, int max)
@@ -243,17 +304,21 @@ namespace Adventure_Game
         public string Name { get; set; }
         public int AttackPower { get; set; }
         public bool IsDead { get; set; }
+        public int Stun { get; set; }
+
         Random rnd = new Random();
 
         public Boss(string name)
         {
             Health = 1000;
             Name = name;
+            Stun = 0;
         }
 
         public void Attack(int min, int max, int playerHealth)
         {
             int chances = rnd.Next(1, 11);
+
             if (chances == 1) {
                 Skill(playerHealth);
             } else {
